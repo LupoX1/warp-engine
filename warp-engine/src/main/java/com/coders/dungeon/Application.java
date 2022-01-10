@@ -111,17 +111,10 @@ public abstract class Application {
 
             glfwSetWindowShouldClose(glfwWindow, KeyboardListener.isKeyPressed(GLFW_KEY_ESCAPE));
 
-            LOG.debug("Time: {}", Time.getTime());
-            LOG.debug("Nanotime: {}", Time.getNanoTime());
             long currentTime = Time.getNanoTime();
             long deltaTime = currentTime - startTime;
             startTime = currentTime;
-            LOG.debug("Frametime {}", deltaTime);
-            LOG.debug("FPS {}", 1E9 / deltaTime);
-
-            if(Time.getTime() > 2.0){
-                throw new RuntimeException("out of time!");
-            }
+            double fps = 1E9 / deltaTime;
 
             update(deltaTime);
             render(deltaTime);
