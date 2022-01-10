@@ -1,4 +1,4 @@
-package com.coders.dungeon;
+package com.coders.dungeon.warp.engine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ public class Launcher {
             properties.load(inputStream);
             String className = properties.getProperty("application.class");
             Class<Application> applicationClass = (Class<Application>) Class.forName(className);
-            Application application = applicationClass.newInstance();
+            Application application = applicationClass.getDeclaredConstructor().newInstance();
             application.run(properties);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
