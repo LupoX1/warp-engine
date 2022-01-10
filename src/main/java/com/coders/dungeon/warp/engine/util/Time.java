@@ -1,4 +1,4 @@
-package com.coders.dungeon.util;
+package com.coders.dungeon.warp.engine.util;
 
 public class Time {
     private static final long applicationStart = System.nanoTime();

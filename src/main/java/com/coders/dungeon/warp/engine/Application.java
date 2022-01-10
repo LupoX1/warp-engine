@@ -1,6 +1,6 @@
-package com.coders.dungeon;
+package com.coders.dungeon.warp.engine;
 
-import com.coders.dungeon.util.Time;
+import com.coders.dungeon.warp.engine.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -9,8 +9,6 @@ import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.IntBuffer;
 import java.util.Properties;
 
