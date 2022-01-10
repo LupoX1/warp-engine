@@ -20,19 +20,15 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Application {
+public abstract class Application {
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
-    private static final Application application = new Application();
 
     private int width, height;
     private String title;
     private long glfwWindow;
 
-    private Application() {
-    }
-
-    public static Application getInstance() {
-        return application;
+    public Application(){
+        LOG.debug("new");
     }
 
     public void run() {
@@ -46,14 +42,6 @@ public class Application {
         } finally {
             destroy();
         }
-    }
-
-    public void update(double delta){
-
-    }
-
-    public void render(double delta){
-
     }
 
     private void load(InputStream inputStream) throws IOException {
@@ -159,4 +147,6 @@ public class Application {
         }
     }
 
+    abstract void update(double delta);
+    abstract void render(double delta);
 }
