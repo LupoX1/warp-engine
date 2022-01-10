@@ -1,6 +1,6 @@
-package com.coders.dungeon.warp.engine;
+package com.codersdungeon.warp.engine;
 
-import com.coders.dungeon.warp.engine.util.Time;
+import com.codersdungeon.warp.engine.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -14,7 +14,6 @@ import java.util.Properties;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -132,6 +131,6 @@ public abstract class Application {
         }
     }
 
-    abstract void update(double delta);
-    abstract void render(double delta);
+    public abstract void update(double delta);
+    public abstract void render(double delta);
 }

@@ -1,4 +1,4 @@
-package com.coders.dungeon.warp.engine;
+package com.codersdungeon.warp.engine;
 
 import java.util.Arrays;
 

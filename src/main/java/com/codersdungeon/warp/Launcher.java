@@ -1,5 +1,6 @@
-package com.coders.dungeon.warp.engine;
+package com.codersdungeon.warp;
 
+import com.codersdungeon.warp.engine.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
