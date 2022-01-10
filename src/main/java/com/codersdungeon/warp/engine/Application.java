@@ -1,5 +1,7 @@
 package com.codersdungeon.warp.engine;
 
+import com.codersdungeon.warp.Launcher;
+import com.codersdungeon.warp.engine.scenes.SceneManager2D;
 import com.codersdungeon.warp.engine.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -9,6 +11,8 @@ import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.IntBuffer;
 import java.util.Properties;
 
@@ -28,13 +32,10 @@ public abstract class Application {
         LOG.debug("new");
     }
 
-    public void run(Properties properties) {
+    public void run() {
         LOG.debug("Run");
-        try {
-            this.width = Integer.parseInt(properties.getProperty("window.width"));
-            this.height = Integer.parseInt(properties.getProperty("window.height"));
-            this.title = properties.getProperty("window.title");
-
+        try (InputStream inputStream = Launcher.class.getClassLoader().getResourceAsStream("application.properties")){
+            load(inputStream);
             init();
             loop();
         } catch (Exception ex) {
@@ -42,6 +43,15 @@ public abstract class Application {
         } finally {
             destroy();
         }
+    }
+
+    private void load(InputStream inputStream) throws IOException {
+        Properties properties = new Properties();
+        properties.load(inputStream);
+
+        this.width = Integer.parseInt(properties.getProperty("window.width"));
+        this.height = Integer.parseInt(properties.getProperty("window.height"));
+        this.title = properties.getProperty("window.title");
     }
 
     private void init() {
@@ -99,6 +109,9 @@ public abstract class Application {
         glClearColor(1.0f, 1.0f, 0.0f, 0.0f);
 
         long startTime = Time.getNanoTime();
+
+        SceneManager2D.currentScene().enter();
+
         while (!glfwWindowShouldClose(glfwWindow)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -113,9 +126,11 @@ public abstract class Application {
             startTime = currentTime;
             double fps = 1E9 / deltaTime;
 
-            update(deltaTime);
-            render(deltaTime);
+            SceneManager2D.currentScene().update(deltaTime);
+            SceneManager2D.currentScene().render(deltaTime);
         }
+
+        SceneManager2D.currentScene().exit();
     }
 
     private void destroy() {
@@ -130,7 +145,4 @@ public abstract class Application {
             LOG.error(ex.getMessage());
         }
     }
-
-    public abstract void update(double delta);
-    public abstract void render(double delta);
 }

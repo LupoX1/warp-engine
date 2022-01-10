@@ -18,7 +18,7 @@ public class Launcher {
             String className = properties.getProperty("application.class");
             Class<Application> applicationClass = (Class<Application>) Class.forName(className);
             Application application = applicationClass.getDeclaredConstructor().newInstance();
-            application.run(properties);
+            application.run();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }

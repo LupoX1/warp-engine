@@ -15,11 +15,15 @@ public class SceneManager2D {
         scenes = new Stack<>();
     }
 
-    public static Scene2D popScene(){
+    public static Scene2D removeScene(){
         return manager.scenes.pop();
     }
 
-    public static void pushScene(Scene2D scene){
+    public static void addScene(Scene2D scene){
         manager.scenes.push(scene);
+    }
+
+    public static Scene2D currentScene(){
+        return manager.scenes.peek();
     }
 }
