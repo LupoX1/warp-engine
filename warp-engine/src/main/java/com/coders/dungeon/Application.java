@@ -31,10 +31,13 @@ public abstract class Application {
         LOG.debug("new");
     }
 
-    public void run() {
+    public void run(Properties properties) {
         LOG.debug("Run");
-        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("application.properties")){
-            load(inputStream);
+        try {
+            this.width = Integer.parseInt(properties.getProperty("window.width"));
+            this.height = Integer.parseInt(properties.getProperty("window.height"));
+            this.title = properties.getProperty("window.title");
+
             init();
             loop();
         } catch (Exception ex) {
@@ -42,15 +45,6 @@ public abstract class Application {
         } finally {
             destroy();
         }
-    }
-
-    private void load(InputStream inputStream) throws IOException {
-        Properties properties = new Properties();
-        properties.load(inputStream);
-
-        this.width = Integer.parseInt(properties.getProperty("window.width"));
-        this.height = Integer.parseInt(properties.getProperty("window.height"));
-        this.title = properties.getProperty("window.title");
     }
 
     private void init() {
