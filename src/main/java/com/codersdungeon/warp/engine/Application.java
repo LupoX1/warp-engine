@@ -1,6 +1,5 @@
 package com.codersdungeon.warp.engine;
 
-import com.codersdungeon.warp.Launcher;
 import com.codersdungeon.warp.engine.scenes.SceneManager2D;
 import com.codersdungeon.warp.engine.util.Time;
 import org.lwjgl.Version;
@@ -34,7 +33,7 @@ public abstract class Application {
 
     public void run() {
         LOG.debug("Run");
-        try (InputStream inputStream = Launcher.class.getClassLoader().getResourceAsStream("application.properties")){
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("application.properties")){
             load(inputStream);
             init();
             loop();
