@@ -118,7 +118,9 @@ public abstract class Application {
 
             glfwPollEvents();
 
-            glfwSetWindowShouldClose(glfwWindow, KeyboardListener.isKeyPressed(GLFW_KEY_ESCAPE));
+            if(KeyboardListener.isKeyPressed(GLFW_KEY_ESCAPE)){
+                glfwSetWindowShouldClose(glfwWindow, true);
+            }
 
             long currentTime = Time.getNanoTime();
             long deltaTime = currentTime - startTime;
@@ -144,4 +146,5 @@ public abstract class Application {
             LOG.error(ex.getMessage());
         }
     }
+
 }
