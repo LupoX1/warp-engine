@@ -27,14 +27,6 @@ public final class Vao {
         glBindVertexArray(0);
     }
 
-    public int getVaoID() {
-        return vaoID;
-    }
-
-    public Vbo getVbo() {
-        return vbo;
-    }
-
     public Ebo getEbo() {
         return ebo;
     }
@@ -47,6 +39,12 @@ public final class Vao {
     public void disable(){
         vbo.disableArrays();
         unbind();
+    }
+
+    public void delete(){
+        glDeleteVertexArrays(vaoID);
+        vbo.delete();
+        ebo.delete();
     }
 
     public static Vao create(VertexArray vertexArray, int[] elementArray){

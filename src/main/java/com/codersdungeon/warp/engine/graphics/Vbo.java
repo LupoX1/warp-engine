@@ -2,7 +2,6 @@ package com.codersdungeon.warp.engine.graphics;
 
 import org.lwjgl.BufferUtils;
 
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL33.*;
@@ -46,6 +45,10 @@ public final class Vbo {
         for(VertexTemplate template : vertexArray.getTemplate()){
             glDisableVertexAttribArray(template.getIndex());
         }
+    }
+
+    public void delete(){
+        glDeleteBuffers(vboID);
     }
 
     public static Vbo createBuffer(VertexArray vertexArray){

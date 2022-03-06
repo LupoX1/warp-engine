@@ -29,8 +29,6 @@ public final class ShaderProgram {
 
     public void deleteProgram(){
         glDeleteProgram(programID);
-        vertexShader.deleteShader();
-        fragmentShader.deleteShader();
     }
 
     public static ShaderProgram createProgram(VertexShader vertexShader, FragmentShader fragmentShader) throws ShaderException {
@@ -46,6 +44,9 @@ public final class ShaderProgram {
             LOG.error("{}", logContent);
             throw new ShaderException(logContent);
         }
+
+        vertexShader.deleteShader();
+        fragmentShader.deleteShader();
 
         return new ShaderProgram(programID, vertexShader, fragmentShader);
     }

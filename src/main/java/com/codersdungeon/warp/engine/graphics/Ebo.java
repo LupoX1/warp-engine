@@ -16,12 +16,12 @@ public final class Ebo {
         this.elementArray = elementArray;
     }
 
-    public int getEboID() {
-        return eboID;
-    }
-
     public int[] getElementArray() {
         return elementArray;
+    }
+
+    public void delete(){
+        glDeleteBuffers(eboID);
     }
 
     public static Ebo createBuffer(int[] elementArray){
