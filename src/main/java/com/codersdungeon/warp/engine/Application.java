@@ -1,5 +1,6 @@
 package com.codersdungeon.warp.engine;
 
+import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import com.codersdungeon.warp.engine.scenes.SceneManager2D;
 import com.codersdungeon.warp.engine.util.Time;
 import org.lwjgl.Version;
@@ -17,7 +18,7 @@ import java.util.Properties;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public abstract class Application {
@@ -53,7 +54,7 @@ public abstract class Application {
         this.title = properties.getProperty("window.title");
     }
 
-    private void init() {
+    private void init() throws InitializationException {
         LOG.debug("Init application LWJGL version {}", Version.getVersion());
 
         GLFWErrorCallback.createPrint(System.err).set();
@@ -63,6 +64,12 @@ public abstract class Application {
         }
 
         glfwDefaultWindowHints();
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
@@ -97,6 +104,8 @@ public abstract class Application {
             glfwSwapInterval(1);
 
             glfwShowWindow(glfwWindow);
+        }catch (Exception ex){
+            throw new InitializationException(ex);
         }
     }
 
@@ -105,10 +114,11 @@ public abstract class Application {
 
         GL.createCapabilities();
 
-        glClearColor(1.0f, 1.0f, 0.0f, 0.0f);
+        glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
         long startTime = Time.getNanoTime();
 
+        SceneManager2D.currentScene().init();
         SceneManager2D.currentScene().enter();
 
         while (!glfwWindowShouldClose(glfwWindow)) {
