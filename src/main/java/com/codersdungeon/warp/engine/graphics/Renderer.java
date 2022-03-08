@@ -6,6 +6,7 @@ import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import com.codersdungeon.warp.engine.util.Resources;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class Renderer implements LifeCycleComponent {
@@ -33,6 +34,8 @@ public class Renderer implements LifeCycleComponent {
 
         // Draw the mesh
         glBindVertexArray(mesh.getVaoId());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
         glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
         // Restore state

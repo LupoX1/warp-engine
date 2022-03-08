@@ -31,10 +31,18 @@ public class DummyGame implements GameLogic{
                 -0.5f, 0.5f, 0.0f,
                 -0.5f, -0.5f, 0.0f,
                 0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,};
+                0.5f, 0.5f, 0.0f
+        };
+        float[] colors = new float[]{
+                1.0f, 0.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 1.0f
+        };
         int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2,};
-        mesh = new Mesh(positions, indices);
+                0, 1, 3, 3, 1, 2
+        };
+        mesh = new Mesh(positions, colors, indices);
         mesh.init();
     }
 

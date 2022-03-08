@@ -14,14 +14,17 @@ import static org.lwjgl.opengl.GL30.*;
 public class Mesh implements LifeCycleComponent {
     private int vaoId;
     private int posVboId;
+    private int colVboId;
     private int idxVboId;
     private int vertexCount;
 
     private final float[] positions;
+    private final float[] colors;
     private final int[] indices;
 
-    public Mesh(float[] positions, int[] indices) {
+    public Mesh(float[] positions, float[] colors, int[] indices) {
         this.positions = positions;
+        this.colors = colors;
         this.indices = indices;
     }
 
@@ -36,6 +39,7 @@ public class Mesh implements LifeCycleComponent {
     @Override
     public void init() throws InitializationException {
         FloatBuffer posBuffer = null;
+        FloatBuffer colBuffer = null;
         IntBuffer indicesBuffer = null;
         try {
             vertexCount = indices.length;
@@ -52,6 +56,15 @@ public class Mesh implements LifeCycleComponent {
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
+            // Position VBO
+            colVboId = glGenBuffers();
+            colBuffer = MemoryUtil.memAllocFloat(colors.length);
+            colBuffer.put(colors).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, colVboId);
+            glBufferData(GL_ARRAY_BUFFER, colBuffer, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+
             // Index VBO
             idxVboId = glGenBuffers();
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -64,6 +77,9 @@ public class Mesh implements LifeCycleComponent {
         } finally {
             if (posBuffer != null) {
                 MemoryUtil.memFree(posBuffer);
+            }
+            if (colBuffer != null) {
+                MemoryUtil.memFree(colBuffer);
             }
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
@@ -78,6 +94,7 @@ public class Mesh implements LifeCycleComponent {
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(posVboId);
+        glDeleteBuffers(colVboId);
         glDeleteBuffers(idxVboId);
 
         // Delete the VAO
