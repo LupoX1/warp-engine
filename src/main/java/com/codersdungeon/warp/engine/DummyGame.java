@@ -27,22 +27,16 @@ public class DummyGame implements GameLogic{
         LOG.debug("init");
         renderer.init();
 
-        float[] positions = new float[]{
-                -0.5f, 0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f
-        };
-        float[] colors = new float[]{
-                1.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, 1.0f, 0.0f, 1.0f
+        float[] vertices = new float[]{
+                -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+                -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+                0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+                0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f
         };
         int[] indices = new int[]{
                 0, 1, 3, 3, 1, 2
         };
-        mesh = new Mesh(positions, colors, indices);
+        mesh = new Mesh(vertices, indices);
         mesh.init();
     }
 

@@ -18,13 +18,11 @@ public class Mesh implements LifeCycleComponent {
     private int idxVboId;
     private int vertexCount;
 
-    private final float[] positions;
-    private final float[] colors;
+    private final float[] vertices;
     private final int[] indices;
 
-    public Mesh(float[] positions, float[] colors, int[] indices) {
-        this.positions = positions;
-        this.colors = colors;
+    public Mesh(float[] vertices, int[] indices) {
+        this.vertices = vertices;
         this.indices = indices;
     }
 
@@ -38,8 +36,7 @@ public class Mesh implements LifeCycleComponent {
 
     @Override
     public void init() throws InitializationException {
-        FloatBuffer posBuffer = null;
-        FloatBuffer colBuffer = null;
+        FloatBuffer verticesBuffer = null;
         IntBuffer indicesBuffer = null;
         try {
             vertexCount = indices.length;
@@ -49,21 +46,19 @@ public class Mesh implements LifeCycleComponent {
 
             // Position VBO
             posVboId = glGenBuffers();
-            posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            posBuffer.put(positions).flip();
+            verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
+            verticesBuffer.put(vertices).flip();
             glBindBuffer(GL_ARRAY_BUFFER, posVboId);
-            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, 7 * Float.BYTES, 0);
 
             // Position VBO
             colVboId = glGenBuffers();
-            colBuffer = MemoryUtil.memAllocFloat(colors.length);
-            colBuffer.put(colors).flip();
             glBindBuffer(GL_ARRAY_BUFFER, colVboId);
-            glBufferData(GL_ARRAY_BUFFER, colBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(1, 4, GL_FLOAT, false, 7 * Float.BYTES, 3 * Float.BYTES);
 
             // Index VBO
             idxVboId = glGenBuffers();
@@ -75,11 +70,8 @@ public class Mesh implements LifeCycleComponent {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         } finally {
-            if (posBuffer != null) {
-                MemoryUtil.memFree(posBuffer);
-            }
-            if (colBuffer != null) {
-                MemoryUtil.memFree(colBuffer);
+            if (verticesBuffer != null) {
+                MemoryUtil.memFree(verticesBuffer);
             }
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
