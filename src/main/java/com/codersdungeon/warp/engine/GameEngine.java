@@ -1,8 +1,6 @@
 package com.codersdungeon.warp.engine;
 
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
-import com.codersdungeon.warp.engine.graphics.ShaderProgram;
-import com.codersdungeon.warp.engine.util.Resources;
 import com.codersdungeon.warp.engine.util.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +8,8 @@ import org.slf4j.LoggerFactory;
 public class GameEngine implements LifeCycleComponent, Runnable{
     private static final Logger LOG = LoggerFactory.getLogger(GameEngine.class);
 
-    private Window window;
-    private GameLogic gameLogic;
-
-    private ShaderProgram shaderProgram;
+    private final Window window;
+    private final GameLogic gameLogic;
 
     public GameEngine(Window window, GameLogic gameLogic) {
         this.window = window;
@@ -24,12 +20,6 @@ public class GameEngine implements LifeCycleComponent, Runnable{
     public void init() throws InitializationException {
         window.init();
         gameLogic.init();
-
-        String vertexSource = Resources.loadString("assets/shaders/vertex.vs");
-        String fragmentSource = Resources.loadString("assets/shaders/fragment.fs");
-
-        shaderProgram = ShaderProgram.create(vertexSource, fragmentSource);
-        shaderProgram.init();
     }
 
     @Override
@@ -40,16 +30,14 @@ public class GameEngine implements LifeCycleComponent, Runnable{
         }catch (Exception ex){
             LOG.error(ex.getMessage(), ex);
         }finally {
-            destroy();
+            dispose();
         }
     }
 
     @Override
-    public void destroy() {
-        gameLogic.destroy();
-        window.destroy();
-
-        shaderProgram.destroy();
+    public void dispose() {
+        gameLogic.dispose();
+        window.dispose();
     }
 
     private void mainLoop(){
@@ -61,7 +49,7 @@ public class GameEngine implements LifeCycleComponent, Runnable{
             long currentTime = Time.getNanoTime();
             long deltaTime = currentTime - startTime;
             startTime = currentTime;
-            double fps = 1E9 / deltaTime;
+            //double fps = 1E9 / deltaTime;
 
             window.update();
             window.closeOnEsc();

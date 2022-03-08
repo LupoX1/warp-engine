@@ -5,11 +5,10 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.IntBuffer;
+import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -19,9 +18,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window implements LifeCycleComponent{
     private static final Logger LOG = LoggerFactory.getLogger(Window.class);
 
-    private String title;
-    private int width;
-    private int height;
+    private final String title;
+    private final int width;
+    private final int height;
     private long glfwWindow;
 
     public Window(String title, int width, int height) {
@@ -30,7 +29,6 @@ public class Window implements LifeCycleComponent{
         this.height = height;
     }
 
-
     @Override
     public void init() throws InitializationException {
         LOG.debug("Init window LWJGL version {}", Version.getVersion());
@@ -38,6 +36,7 @@ public class Window implements LifeCycleComponent{
         initGlfw();
         createWindow();
         setCallbacks();
+        centerWindow();
         showWindow();
     }
 
@@ -46,7 +45,6 @@ public class Window implements LifeCycleComponent{
     }
 
     public void update() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
     }
@@ -57,15 +55,23 @@ public class Window implements LifeCycleComponent{
         }
     }
 
+    public void setClearColor(float r, float g, float b, float a){
+        glClearColor(r, g, b, a);
+    }
+
+    public void clear() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
     @Override
-    public void destroy() {
+    public void dispose() {
         LOG.debug("Destroy");
         try {
             glfwFreeCallbacks(glfwWindow);
             glfwDestroyWindow(glfwWindow);
 
             glfwTerminate();
-            glfwSetErrorCallback(null).free();
+            Objects.requireNonNull(glfwSetErrorCallback(null)).free();
         } catch (Exception ex) {
             LOG.error(ex.getMessage());
         }
@@ -101,22 +107,14 @@ public class Window implements LifeCycleComponent{
         }
     }
 
-    private void resizeWindow() throws InitializationException {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer width = stack.mallocInt(1);
-            IntBuffer height = stack.mallocInt(1);
-
-            glfwGetWindowSize(glfwWindow, width, height);
-
-            GLFWVidMode glfwVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
+    private void centerWindow(){
+        GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        if (videoMode != null) {
             glfwSetWindowPos(
-                glfwWindow,
-                (glfwVidMode.width() - width.get(0)) / 2,
-                (glfwVidMode.height() - height.get(0)) / 2
+                    glfwWindow,
+                    (videoMode.width() - width) / 2,
+                    (videoMode.height() - height) / 2
             );
-        }catch (Exception ex){
-            throw new InitializationException(ex);
         }
     }
 
@@ -125,6 +123,5 @@ public class Window implements LifeCycleComponent{
         glfwSwapInterval(1);
         glfwShowWindow(glfwWindow);
         GL.createCapabilities();
-        glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     }
 }

@@ -52,7 +52,7 @@ public class ShaderProgram implements LifeCycleComponent {
     }
 
     @Override
-    public void destroy() {
+    public void dispose() {
         unbind();
         if (programId != 0) {
             glDeleteProgram(programId);
