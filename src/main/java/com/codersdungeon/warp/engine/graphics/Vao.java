@@ -1,22 +1,17 @@
 package com.codersdungeon.warp.engine.graphics;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL33.*;
 
 public final class Vao {
     private final int vaoID;
-    private Vbo vbo;
+    private final List<Vbo> vbos;
     private Ebo ebo;
 
-    private Vao(int vaoID){
+    private Vao(int vaoID, List<Vbo> vbos){
         this.vaoID = vaoID;
-    }
-
-    private void setVbo(Vbo vbo) {
-        this.vbo = vbo;
-    }
-
-    private void setEbo(Ebo ebo) {
-        this.ebo = ebo;
+        this.vbos = vbos;
     }
 
     private void bind(){
@@ -27,34 +22,27 @@ public final class Vao {
         glBindVertexArray(0);
     }
 
-    public Ebo getEbo() {
-        return ebo;
-    }
-
     public void enable(){
         bind();
-        vbo.enableArrays();
+        vbos.forEach(Vbo::enable);
     }
 
     public void disable(){
-        vbo.disableArrays();
+        vbos.forEach(Vbo::disable);
         unbind();
     }
 
     public void delete(){
         glDeleteVertexArrays(vaoID);
-        vbo.delete();
+        vbos.forEach(Vbo::dispose);
         ebo.delete();
     }
 
-    public static Vao create(VertexArray vertexArray, int[] elementArray){
+    public static Vao create(List<Vbo> vbos, int[] elementArray){
 
         int vaoID = glGenVertexArrays();
-        Vao vao = new Vao(vaoID);
+        Vao vao = new Vao(vaoID, vbos);
         vao.bind();
-
-        Vbo vbo = Vbo.createBuffer(vertexArray);
-        vao.setVbo(vbo);
 
         Ebo ebo = Ebo.createBuffer(elementArray);
         vao.setEbo(ebo);
@@ -62,6 +50,10 @@ public final class Vao {
         vao.unbind();
 
         return vao;
+    }
+
+    private void setEbo(Ebo ebo) {
+        this.ebo = ebo;
     }
 
 

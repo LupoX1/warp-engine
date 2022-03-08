@@ -1,33 +1,68 @@
 package com.codersdungeon.warp.engine.graphics;
 
+import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.exceptions.InitializationException;
+import org.lwjgl.system.MemoryUtil;
+
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
-public final class VertexArray {
-    private final float[] data;
-    private final VertexTemplate[] template;
+public final class VertexArray implements LifeCycleComponent {
+    private final List<Vbo> vbos;
 
-    public VertexArray(float[] data, VertexTemplate... template){
-        this.data = data;
-        this.template = template;
+    public VertexArray(List<Vbo> vbos){
+        this.vbos = vbos;
+    }
+
+    @Override
+    public void init() throws InitializationException {
+
+    }
+
+    public static VertexArray create(float[] data, VertexTemplate... templates){
+        List<Vbo> vbos = new ArrayList<>();
+
+        int totalSize = Arrays.stream(templates)
+                .sorted(Comparator.comparingInt(VertexTemplate::getIndex))
+                .mapToInt(VertexTemplate::getElements)
+                .sum();
+
+        FloatBuffer verticesBuffer = null;
+        try{
+            MemoryUtil.memAllocFloat(data.length);
+            verticesBuffer.put(data).flip();
+
+            int offset = 0;
+            for(VertexTemplate template : templates){
+                Vbo vbo = Vbo.createBuffer(verticesBuffer, template.getIndex(), template.getElements(), totalSize, offset);
+                vbos.add(vbo);
+
+                offset += template.getElements();
+            }
+
+            return new VertexArray(vbos);
+        }catch (Exception ex){
+            return null;
+        }finally {
+            if(verticesBuffer != null){
+                MemoryUtil.memFree(verticesBuffer);
+            }
+        }
     }
 
     public int getSize(){
-        return data.length;
+        return vbos.size();
     }
 
-    public float[] getData() {
-        return data;
+    public List<Vbo> getVbos() {
+        return vbos;
     }
 
-    public VertexTemplate[] getTemplate() {
-        return template;
-    }
+    @Override
+    public void dispose() {
 
-    public int getVertexSize() {
-        int sum = 0;
-        for(VertexTemplate t : template){
-            sum += t.getElements();
-        }
-        return sum;
     }
 }

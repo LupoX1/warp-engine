@@ -45,9 +45,10 @@ public class Mesh implements LifeCycleComponent {
             glBindVertexArray(vaoId);
 
             // Position VBO
-            posVboId = glGenBuffers();
             verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
             verticesBuffer.put(vertices).flip();
+
+            posVboId = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, posVboId);
             glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(0);

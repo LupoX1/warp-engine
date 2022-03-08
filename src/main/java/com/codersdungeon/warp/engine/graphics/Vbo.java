@@ -1,61 +1,67 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import org.lwjgl.BufferUtils;
+import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.exceptions.InitializationException;
 
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL33.*;
 
-public final class Vbo {
+public final class Vbo implements LifeCycleComponent {
 
     private final int vboID;
-    private final VertexArray vertexArray;
+    private final int index;
+    private final int size;
+    private final int stride;
+    private final int offset;
+    private final FloatBuffer verticesBuffer;
 
-    private Vbo(int vboID, VertexArray vertexArray){
+    private Vbo(int vboID, int index, int size, int stride, int offset, FloatBuffer verticesBuffer){
         this.vboID = vboID;
-        this.vertexArray = vertexArray;
+        this.index = index;
+        this.size = size;
+        this.stride = stride;
+        this.offset = offset;
+        this.verticesBuffer = verticesBuffer;
     }
 
-    private void bindBuffer(int vboID){
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexArray.getSize());
-        vertexBuffer.put(vertexArray.getData());
-        vertexBuffer.flip();
+    public static Vbo createBuffer(FloatBuffer verticesBuffer, int index, int size, int stride, int offset){
+        int vboId = glGenBuffers();
+        return new Vbo(vboId, index, size, stride, offset, verticesBuffer);
+    }
 
+    @Override
+    public void init() throws InitializationException {
+        if(vboID == 0){
+            throw new InitializationException("Cannot create vertex buffer");
+        }
+
+        bind();
+        glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
+        enable();
+        glVertexAttribPointer(index, size, GL_FLOAT, false, stride * Float.BYTES, offset);
+        unbind();
+    }
+
+    public void bind(){
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
     }
 
-    private void createLayout(){
-        int vertexSizeBytes = vertexArray.getVertexSize() * Float.BYTES;
-
-        long offset = 0;
-        for(VertexTemplate template : vertexArray.getTemplate()){
-            glVertexAttribPointer(template.getIndex(), template.getElements(), GL_FLOAT, false, vertexSizeBytes, offset * Float.BYTES);
-            offset += template.getElements();
-        }
+    public void enable(){
+        glEnableVertexAttribArray(index);
     }
 
-    public void enableArrays(){
-        for(VertexTemplate template : vertexArray.getTemplate()){
-            glEnableVertexAttribArray(template.getIndex());
-        }
+    public void disable(){
+        glDisableVertexAttribArray(index);
     }
 
-    public void disableArrays(){
-        for(VertexTemplate template : vertexArray.getTemplate()){
-            glDisableVertexAttribArray(template.getIndex());
-        }
+    public void unbind(){
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    public void delete(){
+    @Override
+    public void dispose() {
+        unbind();
         glDeleteBuffers(vboID);
-    }
-
-    public static Vbo createBuffer(VertexArray vertexArray){
-        int vboID = glGenBuffers();
-        Vbo vbo = new Vbo(vboID, vertexArray);
-        vbo.bindBuffer(vboID);
-        vbo.createLayout();
-        return vbo;
     }
 }
