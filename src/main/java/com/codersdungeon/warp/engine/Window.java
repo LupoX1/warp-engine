@@ -30,6 +30,17 @@ public class Window implements LifeCycleComponent{
         this.height = height;
     }
 
+
+    @Override
+    public void init() throws InitializationException {
+        LOG.debug("Init window LWJGL version {}", Version.getVersion());
+
+        initGlfw();
+        createWindow();
+        setCallbacks();
+        showWindow();
+    }
+
     public boolean shouldClose(){
         return glfwWindowShouldClose(glfwWindow);
     }
@@ -44,17 +55,6 @@ public class Window implements LifeCycleComponent{
         if(KeyboardListener.isKeyPressed(GLFW_KEY_ESCAPE)){
             glfwSetWindowShouldClose(glfwWindow, true);
         }
-    }
-
-    @Override
-    public void init() throws InitializationException {
-        LOG.debug("Init window LWJGL version {}", Version.getVersion());
-
-        initGlfw();
-        createWindow();
-        setCallbacks();
-        centerWindow();
-        showWindow();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Window implements LifeCycleComponent{
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if (glfwWindow == NULL) {
@@ -101,7 +101,7 @@ public class Window implements LifeCycleComponent{
         }
     }
 
-    private void centerWindow() throws InitializationException {
+    private void resizeWindow() throws InitializationException {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer width = stack.mallocInt(1);
             IntBuffer height = stack.mallocInt(1);
@@ -111,9 +111,9 @@ public class Window implements LifeCycleComponent{
             GLFWVidMode glfwVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             glfwSetWindowPos(
-                    glfwWindow,
-                    (glfwVidMode.width() - width.get(0)) / 2,
-                    (glfwVidMode.height() - height.get(0)) / 2
+                glfwWindow,
+                (glfwVidMode.width() - width.get(0)) / 2,
+                (glfwVidMode.height() - height.get(0)) / 2
             );
         }catch (Exception ex){
             throw new InitializationException(ex);

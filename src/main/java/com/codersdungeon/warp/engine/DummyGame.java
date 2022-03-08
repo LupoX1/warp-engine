@@ -9,17 +9,14 @@ public class DummyGame implements GameLogic{
 
     @Override
     public void handleInput(Window window) {
-        LOG.debug("handleInput");
     }
 
     @Override
     public void update(float deltaTime) {
-        LOG.debug("update {}", deltaTime);
     }
 
     @Override
     public void render(Window window) {
-        LOG.debug("render");
     }
 
     @Override

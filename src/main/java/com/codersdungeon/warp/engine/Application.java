@@ -26,6 +26,8 @@ public abstract class Application{
             thread.join();
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
+        } finally {
+            LOG.debug("End");
         }
 
     }

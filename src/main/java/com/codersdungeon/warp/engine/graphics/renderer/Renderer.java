@@ -8,11 +8,11 @@ public abstract class Renderer {
     Renderer(){}
 
     public void render(float v, ShaderProgram shaderProgram, Vao vao) {
-        shaderProgram.useProgram();
+        shaderProgram.bind();
         vao.enable();
         this.render(vao);
         vao.disable();
-        shaderProgram.endProgram();
+        shaderProgram.unbind();
     }
 
     abstract void render(Vao vao);

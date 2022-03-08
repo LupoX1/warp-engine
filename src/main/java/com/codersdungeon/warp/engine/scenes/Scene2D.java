@@ -1,7 +1,8 @@
 package com.codersdungeon.warp.engine.scenes;
 
-public interface Scene2D {
-    void init();
+import com.codersdungeon.warp.engine.LifeCycleComponent;
+
+public interface Scene2D extends LifeCycleComponent {
     void enter();
     void update(float dt);
     void render(float dt);
