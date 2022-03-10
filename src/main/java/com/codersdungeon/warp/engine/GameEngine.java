@@ -5,7 +5,7 @@ import com.codersdungeon.warp.engine.util.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameEngine implements LifeCycleComponent, Runnable{
+public class GameEngine implements Disposable, Initializable, Runnable{
     private static final Logger LOG = LoggerFactory.getLogger(GameEngine.class);
 
     private final Window window;

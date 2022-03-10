@@ -1,13 +1,14 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.Disposable;
+import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.lwjgl.opengl.GL20.*;
 
-public class ShaderProgram implements LifeCycleComponent {
+public class ShaderProgram implements Disposable, Initializable {
     private static final Logger LOG = LoggerFactory.getLogger(ShaderProgram.class);
 
     private final int programId;

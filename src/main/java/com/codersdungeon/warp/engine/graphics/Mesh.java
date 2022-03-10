@@ -1,6 +1,7 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.Disposable;
+import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import org.lwjgl.system.MemoryUtil;
 
@@ -11,7 +12,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Mesh implements LifeCycleComponent {
+public class Mesh implements Disposable, Initializable {
     private int vaoId;
     private int posVboId;
     private int colVboId;

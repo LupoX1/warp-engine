@@ -1,6 +1,7 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.Disposable;
+import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import org.lwjgl.system.MemoryUtil;
 
@@ -10,7 +11,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public final class VertexArray implements LifeCycleComponent {
+public final class VertexArray implements Disposable, Initializable {
     private final List<Vbo> vbos;
 
     public VertexArray(List<Vbo> vbos){

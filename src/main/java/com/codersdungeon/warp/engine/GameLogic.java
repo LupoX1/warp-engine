@@ -1,6 +1,6 @@
 package com.codersdungeon.warp.engine;
 
-public interface GameLogic extends LifeCycleComponent{
+public interface GameLogic extends Disposable, Initializable {
 
     void handleInput(Window window);
 

@@ -1,6 +1,8 @@
 package com.codersdungeon.warp.engine;
 
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
+import com.codersdungeon.warp.engine.util.KeyboardListener;
+import com.codersdungeon.warp.engine.util.MouseListener;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -15,7 +17,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Window implements LifeCycleComponent{
+public class Window implements Disposable, Initializable {
     private static final Logger LOG = LoggerFactory.getLogger(Window.class);
 
     private final String title;

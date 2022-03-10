@@ -2,7 +2,6 @@ package com.codersdungeon.warp.engine;
 
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 
-public interface LifeCycleComponent {
+public interface Initializable {
     void init() throws InitializationException;
-    void dispose();
 }

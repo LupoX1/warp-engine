@@ -1,6 +1,7 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.Disposable;
+import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.Window;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import com.codersdungeon.warp.engine.util.Resources;
@@ -9,7 +10,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-public class Renderer implements LifeCycleComponent {
+public class Renderer implements Disposable, Initializable {
 
     private ShaderProgram shaderProgram;
 

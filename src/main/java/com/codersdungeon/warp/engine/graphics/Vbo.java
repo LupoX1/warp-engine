@@ -1,13 +1,14 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import com.codersdungeon.warp.engine.LifeCycleComponent;
+import com.codersdungeon.warp.engine.Disposable;
+import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL33.*;
 
-public final class Vbo implements LifeCycleComponent {
+public final class Vbo implements Disposable, Initializable {
 
     private final int vboID;
     private final int index;
