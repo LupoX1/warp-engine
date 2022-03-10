@@ -125,5 +125,14 @@ public class Window implements Disposable, Initializable {
         glfwSwapInterval(1);
         glfwShowWindow(glfwWindow);
         GL.createCapabilities();
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

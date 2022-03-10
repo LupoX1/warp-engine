@@ -2,19 +2,26 @@ package com.codersdungeon.warp.engine.graphics;
 
 import com.codersdungeon.warp.engine.Disposable;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL20.*;
 
-public class ShaderProgram implements Disposable {
+public final class ShaderProgram implements Disposable {
     private static final Logger LOG = LoggerFactory.getLogger(ShaderProgram.class);
 
     private final int programId;
+    private final Map<String, Integer> uniforms;
 
     ShaderProgram(int programId){
         LOG.debug("new shader program: ID '{}'", programId);
         this.programId = programId;
+        uniforms = new HashMap<>();
     }
 
     void loadShaders(String vertexSource, String fragmentSource) throws InitializationException {
@@ -31,6 +38,21 @@ public class ShaderProgram implements Disposable {
         int fragmentShaderId = createFragmentShader(fragmentSource);
 
         link(vertexShaderId, fragmentShaderId);
+    }
+
+    public void createUniform(String uniformName) throws InitializationException {
+        int uniformLocation = glGetUniformLocation(programId, uniformName);
+        if (uniformLocation < 0) {
+            throw new InitializationException("Could not find uniform:" + uniformName);
+        }
+        uniforms.put(uniformName, uniformLocation);
+    }
+
+    public void setUniform(String uniformName, Matrix4f value) {
+        // Dump the matrix into a float buffer
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            glUniformMatrix4fv(uniforms.get(uniformName), false, value.get(stack.mallocFloat(16)));
+        }
     }
 
     public void bind() {

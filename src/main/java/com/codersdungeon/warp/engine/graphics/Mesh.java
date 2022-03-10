@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class Mesh implements Disposable {
     private static final Logger LOG = LoggerFactory.getLogger(Mesh.class);
 
@@ -18,6 +20,11 @@ public class Mesh implements Disposable {
         this.vertexArray = vertexArray;
         this.vertexBuffers = vertexBuffers;
         this.elementBuffer = elementBuffer;
+    }
+
+    public int getVertexCount() {
+        LOG.debug("get vertex count: {}", elementBuffer.getSize());
+        return elementBuffer.getSize();
     }
 
     public void bindVertexArray() {
@@ -36,15 +43,19 @@ public class Mesh implements Disposable {
         elementBuffer.bind();
     }
 
+    public void render() {
+        LOG.debug("render");
+        bindVertexArray();
+        enableBuffers();
+        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+        disableBuffers();
+        unbindVertexArray();
+    }
+
     public void disableBuffers() {
         LOG.debug("disable buffers");
         vertexBuffers.forEach(VertexBuffer::disable);
         elementBuffer.unbind();
-    }
-
-    public int getVertexCount() {
-        LOG.debug("get vertex count: {}", elementBuffer.getSize());
-        return elementBuffer.getSize();
     }
 
     @Override

@@ -1,9 +1,8 @@
 package com.codersdungeon.warp.engine.graphics;
 
-import com.codersdungeon.warp.engine.Disposable;
-import com.codersdungeon.warp.engine.Initializable;
-import com.codersdungeon.warp.engine.Window;
+import com.codersdungeon.warp.engine.*;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
+import org.joml.Matrix4f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,15 +11,33 @@ import static org.lwjgl.opengl.GL11.*;
 public class Renderer implements Disposable, Initializable {
     private static final Logger LOG = LoggerFactory.getLogger(Renderer.class);
 
+    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static final float Z_NEAR = 0.01f;
+    private static final float Z_FAR = 1000.f;
+
+
+    private final Window window;
+    private final Transformation transformation;
+
     private ShaderProgram shaderProgram;
+    
+    public Renderer(Window window){
+        this.window = window;
+        this.transformation = new Transformation();
+    }
 
     @Override
     public void init() throws InitializationException {
         LOG.debug("init renderer");
+
         shaderProgram = Graphics.createShaderProgram("assets/shaders/vertex.vs", "assets/shaders/fragment.fs");
+        shaderProgram.createUniform("projectionMatrix");
+        shaderProgram.createUniform("worldMatrix");
+
+        window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
-    public void render(Window window, Mesh mesh){
+    public void render(GameItem[] gameItems){
         window.clear();
 
     /*    if (window.isResized()) {
@@ -29,11 +46,20 @@ public class Renderer implements Disposable, Initializable {
         }*/
 
         shaderProgram.bind();
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
-        mesh.bindVertexArray();
-        mesh.enableBuffers();
-        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-        mesh.unbindVertexArray();
+        for(GameItem gameItem : gameItems) {
+            // Set world matrix for this item
+            Matrix4f worldMatrix =
+                    transformation.getWorldMatrix(
+                            gameItem.getPosition(),
+                            gameItem.getRotation(),
+                            gameItem.getScale());
+            shaderProgram.setUniform("worldMatrix", worldMatrix);
+            // Render the mes for this game item
+            gameItem.getMesh().render();
+        }
 
         shaderProgram.unbind();
     }

@@ -18,7 +18,7 @@ public abstract class Application{
         LOG.debug("Run");
         try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("application.properties")) {
             Window window = createWindow(inputStream);
-            GameLogic gameLogic = createGameLogic();
+            GameLogic gameLogic = createGameLogic(window);
             GameEngine gameEngine = new GameEngine(window, gameLogic);
 
             Thread thread = new Thread(gameEngine);
@@ -43,5 +43,5 @@ public abstract class Application{
         return new Window(title, width, height);
     }
 
-    protected abstract GameLogic createGameLogic();
+    protected abstract GameLogic createGameLogic(Window window);
 }
