@@ -20,10 +20,7 @@ public abstract class Application{
             Window window = createWindow(inputStream);
             GameLogic gameLogic = createGameLogic(window);
             GameEngine gameEngine = new GameEngine(window, gameLogic);
-
-            Thread thread = new Thread(gameEngine);
-            thread.run();
-            thread.join();
+            gameEngine.run();
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
         } finally {

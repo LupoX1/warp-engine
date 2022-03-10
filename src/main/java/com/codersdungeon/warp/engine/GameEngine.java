@@ -5,7 +5,7 @@ import com.codersdungeon.warp.engine.util.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameEngine implements Disposable, Initializable, Runnable{
+public class GameEngine implements Disposable, Initializable{
     private static final Logger LOG = LoggerFactory.getLogger(GameEngine.class);
 
     public static final int TARGET_FPS = 75;
@@ -28,7 +28,6 @@ public class GameEngine implements Disposable, Initializable, Runnable{
         gameLogic.init();
     }
 
-    @Override
     public void run() {
         try{
             init();
