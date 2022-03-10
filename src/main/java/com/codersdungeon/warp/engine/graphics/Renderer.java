@@ -1,22 +1,22 @@
-package com.codersdungeon.warp.engine.graphics.v2;
+package com.codersdungeon.warp.engine.graphics;
 
 import com.codersdungeon.warp.engine.Disposable;
 import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.Window;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
-import com.codersdungeon.warp.engine.graphics.Graphics;
-import com.codersdungeon.warp.engine.graphics.ShaderProgram;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class Renderer implements Disposable, Initializable {
+    private static final Logger LOG = LoggerFactory.getLogger(Renderer.class);
 
     private ShaderProgram shaderProgram;
 
     @Override
     public void init() throws InitializationException {
+        LOG.debug("init renderer");
         shaderProgram = Graphics.createShaderProgram("assets/shaders/vertex.vs", "assets/shaders/fragment.fs");
     }
 
@@ -30,20 +30,17 @@ public class Renderer implements Disposable, Initializable {
 
         shaderProgram.bind();
 
-        // Draw the mesh
-        glBindVertexArray(mesh.getVaoId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+        mesh.bindVertexArray();
+        mesh.enableBuffers();
         glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        // Restore state
-        glBindVertexArray(0);
+        mesh.unbindVertexArray();
 
         shaderProgram.unbind();
     }
 
     @Override
     public void dispose() {
+        LOG.debug("dispose renderer");
         if(shaderProgram!=null){
             shaderProgram.dispose();
         }

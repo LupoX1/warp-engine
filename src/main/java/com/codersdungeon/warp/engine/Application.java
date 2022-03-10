@@ -22,7 +22,7 @@ public abstract class Application{
             GameEngine gameEngine = new GameEngine(window, gameLogic);
 
             Thread thread = new Thread(gameEngine);
-            thread.start();
+            thread.run();
             thread.join();
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);

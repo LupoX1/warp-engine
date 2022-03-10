@@ -13,10 +13,13 @@ public class ShaderProgram implements Disposable {
     private final int programId;
 
     ShaderProgram(int programId){
+        LOG.debug("new shader program: ID '{}'", programId);
         this.programId = programId;
     }
 
     void loadShaders(String vertexSource, String fragmentSource) throws InitializationException {
+        LOG.debug("load shaders");
+
         if(vertexSource == null){
             throw new InitializationException("Vertex source is null");
         }
@@ -31,15 +34,21 @@ public class ShaderProgram implements Disposable {
     }
 
     public void bind() {
+        LOG.debug("use program ID '{}'", programId);
+
         glUseProgram(programId);
     }
 
     public void unbind() {
+        LOG.debug("unbind program ID '{}'", programId);
+
         glUseProgram(0);
     }
 
     @Override
     public void dispose() {
+        LOG.debug("dispose program ID '{}'", programId);
+
         unbind();
         if (programId != 0) {
             glDeleteProgram(programId);
@@ -47,14 +56,20 @@ public class ShaderProgram implements Disposable {
     }
 
     private int createVertexShader(String shaderCode) throws InitializationException {
+        LOG.debug("create vertex shader: '{}'", shaderCode);
+
         return createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
     private int createFragmentShader(String shaderCode) throws InitializationException {
+        LOG.debug("create fragment shader: '{}'", shaderCode);
+
         return createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
     private int createShader(String shaderCode, int shaderType) throws InitializationException {
+        LOG.debug("create shader");
+
         int shaderId = glCreateShader(shaderType);
         if (shaderId == 0) {
             throw new InitializationException("Error creating shader. Type: " + shaderType);
@@ -74,6 +89,8 @@ public class ShaderProgram implements Disposable {
     }
 
     private void link(int vertexShaderId, int fragmentShaderId) throws InitializationException {
+        LOG.debug("link shaders '{}', '{}'", vertexShaderId, fragmentShaderId);
+
         glAttachShader(programId, vertexShaderId);
         glAttachShader(programId, fragmentShaderId);
 
