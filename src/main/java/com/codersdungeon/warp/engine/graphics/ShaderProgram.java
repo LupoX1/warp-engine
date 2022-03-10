@@ -1,41 +1,27 @@
 package com.codersdungeon.warp.engine.graphics;
 
 import com.codersdungeon.warp.engine.Disposable;
-import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.lwjgl.opengl.GL20.*;
 
-public class ShaderProgram implements Disposable, Initializable {
+public class ShaderProgram implements Disposable {
     private static final Logger LOG = LoggerFactory.getLogger(ShaderProgram.class);
 
     private final int programId;
-    private final String vertexSource;
-    private final String fragmentSource;
 
-    private ShaderProgram(int programId, String vertexSource, String fragmentSource){
+    ShaderProgram(int programId){
         this.programId = programId;
-        this.vertexSource = vertexSource;
-        this.fragmentSource = fragmentSource;
     }
 
-    public static ShaderProgram create(String vertexSource, String fragmentSource){
-        int programId = glCreateProgram();
-        return new ShaderProgram(programId, vertexSource, fragmentSource);
-    }
-
-    @Override
-    public void init() throws InitializationException {
+    void loadShaders(String vertexSource, String fragmentSource) throws InitializationException {
         if(vertexSource == null){
             throw new InitializationException("Vertex source is null");
         }
         if(fragmentSource == null){
             throw new InitializationException("Fragment source is null");
-        }
-        if (programId == 0) {
-            throw new InitializationException("Could not create Shader");
         }
 
         int vertexShaderId = createVertexShader(vertexSource);

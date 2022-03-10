@@ -1,4 +1,4 @@
-package com.codersdungeon.warp.engine.graphics;
+package com.codersdungeon.warp.engine.graphics.v2;
 
 public final class VertexTemplate {
     private final int index;

@@ -1,10 +1,11 @@
-package com.codersdungeon.warp.engine.graphics;
+package com.codersdungeon.warp.engine.graphics.v2;
 
 import com.codersdungeon.warp.engine.Disposable;
 import com.codersdungeon.warp.engine.Initializable;
 import com.codersdungeon.warp.engine.Window;
 import com.codersdungeon.warp.engine.exceptions.InitializationException;
-import com.codersdungeon.warp.engine.util.Resources;
+import com.codersdungeon.warp.engine.graphics.Graphics;
+import com.codersdungeon.warp.engine.graphics.ShaderProgram;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -16,11 +17,7 @@ public class Renderer implements Disposable, Initializable {
 
     @Override
     public void init() throws InitializationException {
-        String vertexSource = Resources.loadString("assets/shaders/vertex.vs");
-        String fragmentSource = Resources.loadString("assets/shaders/fragment.fs");
-
-        shaderProgram = ShaderProgram.create(vertexSource, fragmentSource);
-        shaderProgram.init();
+        shaderProgram = Graphics.createShaderProgram("assets/shaders/vertex.vs", "assets/shaders/fragment.fs");
     }
 
     public void render(Window window, Mesh mesh){
@@ -47,6 +44,8 @@ public class Renderer implements Disposable, Initializable {
 
     @Override
     public void dispose() {
-        shaderProgram.dispose();
+        if(shaderProgram!=null){
+            shaderProgram.dispose();
+        }
     }
 }

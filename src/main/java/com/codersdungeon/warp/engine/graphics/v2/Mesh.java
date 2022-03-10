@@ -1,4 +1,4 @@
-package com.codersdungeon.warp.engine.graphics;
+package com.codersdungeon.warp.engine.graphics.v2;
 
 import com.codersdungeon.warp.engine.Disposable;
 import com.codersdungeon.warp.engine.Initializable;

@@ -1,4 +1,4 @@
-package com.codersdungeon.warp.engine.graphics;
+package com.codersdungeon.warp.engine.graphics.v2;
 
 import org.lwjgl.BufferUtils;
 
