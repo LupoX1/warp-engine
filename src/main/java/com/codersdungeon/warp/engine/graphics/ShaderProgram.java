@@ -55,6 +55,10 @@ public final class ShaderProgram implements Disposable {
         }
     }
 
+    public void setUniform(String uniformName, int value) {
+        glUniform1i(uniforms.get(uniformName), value);
+    }
+
     public void bind() {
         LOG.debug("use program ID '{}'", programId);
 

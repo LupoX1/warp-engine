@@ -6,6 +6,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -29,65 +30,38 @@ public class Graphics {
             throw new InitializationException("Cannot create shader program");
         }
 
-        String vertexSource = Resources.loadString(vertexShader);
-        String fragmentSource = Resources.loadString(fragmentShader);
+        String vertexSource = Resources.loadTextResource(vertexShader);
+        String fragmentSource = Resources.loadTextResource(fragmentShader);
 
         ShaderProgram shaderProgram = new ShaderProgram(programId);
         shaderProgram.loadShaders(vertexSource, fragmentSource);
         return shaderProgram;
     }
 
-    /*
-      FloatBuffer posBuffer = null;
-        FloatBuffer colourBuffer = null;
-        IntBuffer indicesBuffer = null;
-        try {
-            vertexCount = indices.length;
+    private static Texture createTexture(String imagePath) throws InitializationException {
+        LOG.debug("create texture: '{}'", imagePath);
 
-            vaoId = glGenVertexArrays();
-            glBindVertexArray(vaoId);
-
-            // Position VBO
-            posVboId = glGenBuffers();
-            posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            posBuffer.put(positions).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, posVboId);
-            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-            // Colour VBO
-            colourVboId = glGenBuffers();
-            colourBuffer = MemoryUtil.memAllocFloat(colours.length);
-            colourBuffer.put(colours).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, colourVboId);
-            glBufferData(GL_ARRAY_BUFFER, colourBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-
-            // Index VBO
-            idxVboId = glGenBuffers();
-            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            indicesBuffer.put(indices).flip();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        } finally {
-            if (posBuffer != null) {
-                MemoryUtil.memFree(posBuffer);
-            }
-            if (colourBuffer != null) {
-                MemoryUtil.memFree(colourBuffer);
-            }
-            if (indicesBuffer != null) {
-                MemoryUtil.memFree(indicesBuffer);
-            }
+        int textureId = glGenTextures();
+        if(textureId == 0){
+            throw new InitializationException("Cannot create texture");
         }
-     */
 
-    public static Mesh createMesh(float[] vertices, int[] indices, List<VertexTemplate> templateList) throws InitializationException {
+        Image image = Resources.loadPng(imagePath);
+
+        try{
+            Texture texture = new Texture(textureId);
+            texture.bind();
+            //texture.setParameters();
+            texture.setData(image);
+            return texture;
+        }catch (Exception ex){
+            throw new InitializationException(ex);
+        }finally {
+            image.dispose();
+        }
+    }
+
+    public static Mesh createMesh(float[] vertices, int[] indices, List<VertexTemplate> templateList, String texturePath) throws InitializationException {
         LOG.debug("create mesh");
 
         templateList.sort(Comparator.comparingInt(VertexTemplate::getIndex));
@@ -98,7 +72,9 @@ public class Graphics {
         ElementBuffer elementBuffer = createElementBuffer(indices);
         vertexArray.unbind();
 
-        Mesh mesh = new Mesh(vertexArray, vertexBuffers, elementBuffer);
+        Texture texture = createTexture(texturePath);
+
+        Mesh mesh = new Mesh(vertexArray, vertexBuffers, elementBuffer, texture);
         return mesh;
     }
 
@@ -185,4 +161,19 @@ public class Graphics {
             }
         }
     }
+
+    private static void premultiplyAlpha(int w, int h, ByteBuffer image){
+        int stride = w * 4;
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                int i = y * stride + x * 4;
+
+                float alpha = (image.get(i + 3) & 0xFF) / 255.0f;
+                image.put(i + 0, (byte) Math.round(((image.get(i + 0) & 0xFF) * alpha)));
+                image.put(i + 1, (byte) Math.round(((image.get(i + 1) & 0xFF) * alpha)));
+                image.put(i + 2, (byte) Math.round(((image.get(i + 2) & 0xFF) * alpha)));
+            }
+        }
+    }
+
 }

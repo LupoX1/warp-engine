@@ -14,12 +14,14 @@ public class Mesh implements Disposable {
     private final VertexArray vertexArray;
     private final List<VertexBuffer> vertexBuffers;
     private final ElementBuffer elementBuffer;
+    private final Texture texture;
 
-    public Mesh(VertexArray vertexArray, List<VertexBuffer> vertexBuffers, ElementBuffer elementBuffer) {
+    public Mesh(VertexArray vertexArray, List<VertexBuffer> vertexBuffers, ElementBuffer elementBuffer, Texture texture) {
         LOG.debug("new mesh");
         this.vertexArray = vertexArray;
         this.vertexBuffers = vertexBuffers;
         this.elementBuffer = elementBuffer;
+        this.texture = texture;
     }
 
     public int getVertexCount() {
@@ -47,6 +49,7 @@ public class Mesh implements Disposable {
         LOG.debug("render");
         bindVertexArray();
         enableBuffers();
+        texture.enable();
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
         disableBuffers();
         unbindVertexArray();

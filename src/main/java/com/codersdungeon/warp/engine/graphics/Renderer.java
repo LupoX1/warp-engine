@@ -6,8 +6,6 @@ import org.joml.Matrix4f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.lwjgl.opengl.GL11.*;
-
 public class Renderer implements Disposable, Initializable {
     private static final Logger LOG = LoggerFactory.getLogger(Renderer.class);
 
@@ -33,6 +31,7 @@ public class Renderer implements Disposable, Initializable {
         shaderProgram = Graphics.createShaderProgram("assets/shaders/vertex.vs", "assets/shaders/fragment.fs");
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("worldMatrix");
+        shaderProgram.createUniform("texture_sampler");
 
         window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -57,6 +56,7 @@ public class Renderer implements Disposable, Initializable {
                             gameItem.getRotation(),
                             gameItem.getScale());
             shaderProgram.setUniform("worldMatrix", worldMatrix);
+            shaderProgram.setUniform("texture_sampler", 0);
             // Render the mes for this game item
             gameItem.getMesh().render();
         }
