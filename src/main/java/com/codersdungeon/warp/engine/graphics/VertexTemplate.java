@@ -3,12 +3,18 @@ package com.codersdungeon.warp.engine.graphics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class VertexTemplate {
+import java.io.Serializable;
+
+public final class VertexTemplate implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(VertexArray.class);
 
-    private final int index;
-    private final int elements;
-    private final String description;
+    private int index;
+    private int elements;
+    private String description;
+
+    public VertexTemplate(){
+
+    }
 
     public VertexTemplate(int index, int elements, String description) {
         LOG.debug("new vertex template '{}', '{}', '{}'", index, elements, description);
@@ -21,11 +27,23 @@ public final class VertexTemplate {
         return index;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public int getElements() {
         return elements;
     }
 
+    public void setElements(int elements) {
+        this.elements = elements;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

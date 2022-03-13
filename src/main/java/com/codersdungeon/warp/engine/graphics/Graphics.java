@@ -61,15 +61,13 @@ public class Graphics {
         }
     }
 
-    public static Mesh createMesh(float[] vertices, int[] indices, List<VertexTemplate> templateList, String texturePath) throws InitializationException {
+    public static Mesh createMesh( ModelData modelData, String texturePath) throws InitializationException {
         LOG.debug("create mesh");
-
-        templateList.sort(Comparator.comparingInt(VertexTemplate::getIndex));
 
         VertexArray vertexArray = createVertexArray();
         vertexArray.bind();
-        List<VertexBuffer> vertexBuffers = createVertexBuffers(vertices, templateList);
-        ElementBuffer elementBuffer = createElementBuffer(indices);
+        List<VertexBuffer> vertexBuffers = createVertexBuffers(modelData.getVertices(), modelData.getVertexTemplates());
+        ElementBuffer elementBuffer = createElementBuffer(modelData.getIndices());
         vertexArray.unbind();
 
         Texture texture = createTexture(texturePath);
