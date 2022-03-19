@@ -94,7 +94,7 @@ public class Resources {
         buffer.flip();
         buffer.get(temp);
         try(ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(temp))){
-            return (ModelData)inputStream.readObject();
+            return (ModelData) inputStream.readObject();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

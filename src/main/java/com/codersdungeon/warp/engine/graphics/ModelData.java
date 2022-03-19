@@ -6,7 +6,7 @@ import java.util.List;
 public class ModelData implements Serializable {
     private float[] vertices;
     private int[] indices;
-    private  List<VertexTemplate> vertexTemplates;
+    private List<VertexTemplate> vertexTemplates;
 
     public ModelData(){
 
